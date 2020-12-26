@@ -15,8 +15,11 @@ import time
 
 inventory = {}
 
-Event = 0
+Yes = ["y", "Y", "yes", "Yes"]
+No = ["n", "N", "no", "No"]
+Confirm = ["a", "A"]
 
+Event = 0
 
 
 print(".")
@@ -27,7 +30,9 @@ print("...")
 
 
 
-def PlayerInventory():
+
+def PlayerInventory(): #adds things the player picks up during the game into the inventory, these correspond
+                       #to the "events" the player is in
     if Event == 0:
         inventory["Stick"] = 5
         print("The stick was added to the inventory")
@@ -35,19 +40,35 @@ def PlayerInventory():
 
 
 while True:
-    if Event == 0:
-        usr_input = str(input("Press A to wake up"))
-        if usr_input == "A" or usr_input == "a":
-            print(" 'Nghh...' ")
-            time.sleep(1)
-            print(" 'My head... where I am..?' ")
-            usr_input = input("I took in my surroundings as my consciousness slowly reformed. Right next to me was "
-                              "a stick on the ground" '(pick up? y/n)')
+    usr_input = str(input("Press A to wake up"))
+    if usr_input in Confirm:
+        print(" 'Nghh...' ")
+        time.sleep(1)
+        print(" 'My head... where I am..?' ")
+        usr_input = input("I took in my surroundings as my consciousness slowly reformed. Right next to me was "
+                          "a stick on the ground" '(pick up? y/n)')
+        if usr_input in Yes:
+            PlayerInventory()
+            Event = 1
+        elif usr_input in No:
+            Event = 1
+    else:
+        continue
 
-            if usr_input == "y":
-                PlayerInventory()
+
+    if Event == 1:
+        print("As you walk along, you notice some fire on the wall")
+        if "Stick" in inventory:
+            usr_input = input("do you want to use your stick to make a torch?")
+            if usr_input in Yes:
+                print("you lit the stick!")
+                inventory["Stick"] -= 1
+                print(inventory)
+                break
+        else:
+            print("you have nothing on your person to make a torch")
             break
 
-        elif usr_input != "A" or usr_input !="a":
-            continue
+
+
 
