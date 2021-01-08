@@ -2,6 +2,10 @@ import time
 
 inventory = {}
 
+health = 20 #if it reaches 0 the it is game over
+
+hunger: 0 #if it reaches 10 the health begins to reduce gradually
+
 Yes = ["y", "Y", "yes", "Yes"]
 No = ["n", "N", "no", "No"]
 Confirm = ["a", "A"]
@@ -17,6 +21,13 @@ time.sleep(2)
 print("...")
 
 
+
+def PlayerStatsBehaviour():
+    global hunger
+    global health
+
+    if hunger == 10:
+        health =- 1
 
 
 def PlayerInventory(): #Adds things the player picks up during the game into the inventory, these correspond
@@ -39,7 +50,7 @@ def PlayerInventory(): #Adds things the player picks up during the game into the
                     print(inventory)
                     break
                 else:
-                    print("Please enter in a number between 1 and 5")
+                    print("Please enter in a number between 1 and 5") #occurs when the player enters a number less than one or more than #5
                     continue
             except ValueError:
                 print("please enter in a number")
@@ -51,32 +62,39 @@ while True: #This is where all the events of the game play out
         usr_input = str(input("Press A to wake up"))
         if usr_input in Confirm:
             print(" 'Nghh...' ")
-            time.sleep(1)
+            time.sleep(2)
             print(" 'My head... where I am..?' ")
-            usr_input = input("I took in my surroundings as my consciousness slowly reformed. Right next to me were a bunch of sticks "
-                              "on the ground" '(pick them up? y/n)')
-            if usr_input in Yes:
+            time.sleep(2)
+            print("""I took in my surroundings as my consciousness slowly reformed.
+            It seems that I am in a dark room, there is no window so I can't tell
+            what the time is. The room itself is mostly dark. Looking down  I see
+            a bunch of sticks lying around, which I picked up""")
+            usr_input = input("Press A")
+            if usr_input in Confirm:
                 PlayerInventory()
                 Event = 1
-            elif usr_input in No:
-                Event = 1
+            else:
+                continue
         else:
-            continue #if the user inputs anything that is not in the yes,no or confirm lists, the first if statement
-                      #wil be repeated
+            continue #if the user inputs anything that is not in confirm the statement will repeat
 
 
     if Event == 1:
-        print("As you walk along, you notice some fire on the wall")
-        if "Sticks" in inventory:#checks if the sticks are in the player's inventory system
-            usr_input = input("do you want to use your stick to make a torch?")
-            if usr_input in Yes:
-                PlayerInventory()
-                Event = 2
-            elif usr_input in No:
-                Event = 2
-        else:
-            print("you have nothing on your person to make a torch")
+        print("'Oh I think I see some fire there, maybe I can make a couple of torches?'")
+        usr_input = input("Press A")
+        if usr_input in Confirm:
+            PlayerInventory()
             Event = 2
+        else:
+            continue
 
     if Event == 2:
-        pass
+        print("After making some torches I looked around some more until I found the exit of this room")
+        usr_input = input("Press A")
+        if usr_input in Confirm:
+            print("'Yes! A way out!'")
+            break
+        else:
+            continue
+
+
