@@ -6,10 +6,13 @@ health = 20 #if it reaches 0 the it is game over
 
 hunger: 0 #if it reaches 10 the health begins to reduce gradually
 
+usr_input = ""
 Yes = ["y", "Y", "yes", "Yes"]
 No = ["n", "N", "no", "No"]
 Confirm = ["a", "A"]
 LMR = ["Left", "Middle", "Right"]
+Fight = ["Fight", "fight", "f", "F"]
+Run = [ "Run", "run", "r", "R"]
 
 valueChange = 0
 
@@ -20,6 +23,19 @@ time.sleep(2)
 print("..")
 time.sleep(2)
 print("...")
+
+
+
+def FightOptions():
+   global usr_input
+   while True:
+        usr_input = input("Fight/Run:")
+        if usr_input in Fight:
+            break
+        elif usr_input in Run:
+            break
+        else:
+            continue
 
 
 
@@ -78,9 +94,9 @@ while True: #This is where all the events of the game play out
         print(" 'My head... where I am..?' ")
         time.sleep(2)
         print("""I took in my surroundings as my consciousness slowly reformed.
-                        It seems that I am in a dark room, there were no window so I couldn't tell
-                        what the time was. The room itself was mostly dark. Looking down  I saw
-                        a bunch of sticks lying around, which I picked up""")
+        It seems that I am in a dark room, there were no window so I couldn't tell
+        what the time was. The room itself was mostly dark. Looking down  I saw
+        a bunch of sticks lying around, which I picked up""")
 
         OptionsConfirm()
         PlayerInventory()
@@ -96,7 +112,7 @@ while True: #This is where all the events of the game play out
         print("I used one of the torches to look around my surrondings again, until I found the exit of this room")
         OptionsConfirm()
         print("'Yes! A way out!'")
-        print("I then left the room without looking back. Outside was a corridor. In front were 3 doors ")
+        print("I then left the room without looking back. Outside was a corridor. And in front were 3 doors ")
         OptionsConfirm()
         print("'Hmmm, which door to take?'")
         time.sleep(2)
@@ -119,9 +135,30 @@ while True: #This is where all the events of the game play out
     elif Event == "Right Door":
         print("I took the door on the right")
         break
+
     elif Event == "Middle Door":
-        print("'You can't wrong with the middle door' I thought to myself")
-        break
+        print("'You can't wrong with the middle door' I thought to myself.")
+        OptionsConfirm()
+        print("I walked through and nothing at first seemed conspicuous. That was until... I came across a pile of bones and a skull.")
+        OptionsConfirm()
+        print("'Wh-What...?'")
+        OptionsConfirm()
+        print("I didn't have much time to think more about what I was seeing as the bones and skull began to move, they rearranged themselves until it resembled an actual body.")
+        OptionsConfirm()
+        print("Once that was complete, the skeleton took notice of my presence and started to run at me!")
+        OptionsConfirm()
+        print("'What should I do?!'")
+        time.sleep(1.5)
+        FightOptions()
+        if usr_input in Fight:
+            print("'Here goes nothing!' Gripping the torch tightly I swiped the flame at the alive skeleton.")
+            break
+        elif usr_input in Run:
+            print("'I don't think fighting that thing is such a good idea.' And with that I run away")
+            break
+
+
+
 
 
 
