@@ -4,7 +4,7 @@ inventory = {}
 
 health = 20 #if it reaches 0 the it is game over
 
-hunger: 0 #if it reaches 10 the health begins to reduce gradually
+hunger = 0 #if it reaches 10 the health begins to reduce gradually
 
 usr_input = ""
 Yes = ["y", "Y", "yes", "Yes"]
@@ -56,7 +56,13 @@ def PlayerStatsBehaviour():
     global health
 
     if hunger == 10:
-        health =- 1
+        health -= 1
+
+    if Event == "Middle Door":
+         health -= 3
+         print("3 damage was dealt!")
+         print("(Health remaining):", health)
+
 
 
 def PlayerInventory(): #Adds things the player picks up during the game into the inventory, these correspond
@@ -83,6 +89,10 @@ def PlayerInventory(): #Adds things the player picks up during the game into the
                     continue
             except ValueError:
                 print("please enter in a number")
+
+    elif Event == "Middle Door":
+        inventory["LitStick"] -= 1
+        print(inventory)
 
 
 
@@ -151,7 +161,17 @@ while True: #This is where all the events of the game play out
         time.sleep(1.5)
         FightOptions()
         if usr_input in Fight:
-            print("'Here goes nothing!' Gripping the torch tightly I swiped the flame at the alive skeleton.")
+            print("'Here goes nothing!' Gripping the torch tightly I swiped the flame at the alive skeleton./n/"
+                  "the flames made contact with the skeleton for a brief moment.")
+            OptionsConfirm()
+            print("In retaliation, the skeleton swipped its hand at me, their claws slashed against my side once")
+            PlayerStatsBehaviour()
+            OptionsConfirm()
+            print("""Dismissing the pain burning in my side I swiped the torch at it again, aiming for the head this time
+            around. The head was reduced to nothing but ash, causing the rest of the body to collapse into a heap of bones.""")
+            OptionsConfirm()
+            print("'Looks like this torch has ran out.'")
+            PlayerInventory()
             break
         elif usr_input in Run:
             print("'I don't think fighting that thing is such a good idea.' And with that I run away")
