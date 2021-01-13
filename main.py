@@ -7,12 +7,14 @@ health = 20 #if it reaches 0 the it is game over
 hunger = 0 #if it reaches 10 the health begins to reduce gradually
 
 
+Restore = ""
 Yes = ["y", "Y", "yes", "Yes"]
 No = ["n", "N", "no", "No"]
 Confirm = ["a", "A"]
 LMR = ["Left", "Middle", "Right"]
 Fight = ["Fight", "fight", "f", "F"]
 Run = [ "Run", "run", "r", "R"]
+OpenInventory = ["I", "i,"]
 
 valueChange = 0
 
@@ -49,6 +51,7 @@ def OptionsConfirm(): #this function is called upon everytime the player is aske
 
 
 def PlayerStatsBehaviour():
+
     global hunger
     global health
 
@@ -60,9 +63,27 @@ def PlayerStatsBehaviour():
          print("3 damage was dealt!")
          print("(Health remaining):", health)
 
+def RestoreHP():
+    global health
+    health += 5
+    print("Health:", health)
+
+def UseItems():
+
+   print(inventory)
+   while True:
+       select_item = input("Input an item or press the B button to close the inventory")
+       if select_item in inventory:
+           if select_item == "Med Kit":
+               print("This will restore 5HP. Do you want to use it?")
+               Restore = input(":")
+               if Restore in Yes:
+                   RestoreHP()
+                   break
 
 
-def PlayerInventory(): #Adds things the player picks up during the game into the inventory, these correspond
+
+def AddToInventory(): #Adds things the player picks up during the game into the inventory, these correspond
                        #to the "events" the player is in.
     if Event == 0:
         inventory["Sticks"] = 5
@@ -88,10 +109,15 @@ def PlayerInventory(): #Adds things the player picks up during the game into the
                 print("please enter in a number")
 
     elif Event == "Middle Door":
-        print("You gained the skeleton lance!")
-        inventory["Skeleton Lance"] =  10
+        print("the Skeleton Lance was added to your inventory.")
+        inventory["Skeleton Lance"] = 10
         print("Your torch has run out!")
         inventory["Torch"] -= 1
+        print(inventory)
+
+    elif Event == "AfterSkeletonFight":
+        inventory["Med Kit"] = 5
+        print("The Med Kit was added to your inventory.")
         print(inventory)
 
 
@@ -109,16 +135,16 @@ while True: #This is where all the events of the game play out
         a bunch of sticks lying around, which I picked up""")
 
         OptionsConfirm()
-        PlayerInventory()
+        AddToInventory()
         Event = 1
 
-    if Event == 1:
+    elif Event == 1:
         print("'Oh I think I see some fire there, maybe I can make a couple of torches?'")
         OptionsConfirm()
-        PlayerInventory()
+        AddToInventory()
         Event = 2
 
-    if Event == 2:
+    elif Event == 2:
         print("I used one of the torches to look around my surrondings again, until I found the exit of this room")
         OptionsConfirm()
         print("'Yes! A way out!'")
@@ -172,11 +198,27 @@ while True: #This is where all the events of the game play out
             print("""Dismissing the pain burning in my side I swiped the torch at it again, aiming for the head this time
             around. The head was reduced to nothing but ash, causing the rest of the body to collapse into a heap of bones.""")
             OptionsConfirm()
-            PlayerInventory()
-            break
+            AddToInventory()
+            Event = "AfterSkeletonFight"
+
         elif usr_input in Run:
             print("'I don't think fighting that thing is such a good idea!' And with that I ran away.")
             OptionsConfirm()
             print("""I ended up back in the hall way and tried to catch my breath. It didn't seem like
              the skeleton was pursuing me anymore. """)
             Event = "Door Choice"
+    elif Event == "AfterSkeletonFight":
+        print("I walked on some more until I came across another object on the ground")
+        OptionsConfirm()
+        print("'Looks like a first aid, this will be helpful, my side is still hurting after that encourer with the skeleton.'")
+        AddToInventory()
+        print("""If you want to open up the inventory, press the I button on your keyboard. This way you will be able to use items to restore your HP.
+        Why don't you try it now?""")
+        usr_input = input(":")
+        if usr_input in OpenInventory:
+            UseItems()
+            Event = "Next"
+
+    elif Event == "Next":
+        print("this is the next event")
+        break
