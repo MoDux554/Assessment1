@@ -6,7 +6,7 @@ health = 20 #if it reaches 0 the it is game over
 
 hunger = 0 #if it reaches 10 the health begins to reduce gradually
 
-usr_input = ""
+
 Yes = ["y", "Y", "yes", "Yes"]
 No = ["n", "N", "no", "No"]
 Confirm = ["a", "A"]
@@ -38,7 +38,6 @@ def FightOptions():
             continue
 
 
-
 def OptionsConfirm(): #this function is called upon everytime the player is asked to input the A button to continue dialouge
     global usr_input
     while True:
@@ -47,8 +46,6 @@ def OptionsConfirm(): #this function is called upon everytime the player is aske
             break
         else:
             continue
-
-
 
 
 def PlayerStatsBehaviour():
@@ -73,15 +70,15 @@ def PlayerInventory(): #Adds things the player picks up during the game into the
         print(inventory)
 
     elif Event == 1:
-        # The litstick is added here so that more can be added to it from the user input
-        inventory["LitStick"] = 0
+        # The torch is added here so that more can be added to it from the user input
+        inventory["Torch"] = 0
         global valueChange #this variable is referenced outside of the PlayerInventory function
         while True:
             try:
                 valueChange = int(input("How many of your sticks would you like to light up?"))
                 if valueChange <=5 and valueChange >=1:
                     inventory["Sticks"] -= valueChange
-                    inventory["LitStick"] += valueChange
+                    inventory["Torch"] += valueChange
                     print(inventory)
                     break
                 else:
@@ -91,7 +88,10 @@ def PlayerInventory(): #Adds things the player picks up during the game into the
                 print("please enter in a number")
 
     elif Event == "Middle Door":
-        inventory["LitStick"] -= 1
+        print("You gained the skeleton lance!")
+        inventory["Skeleton Lance"] =  10
+        print("Your torch has run out!")
+        inventory["Torch"] -= 1
         print(inventory)
 
 
@@ -124,6 +124,9 @@ while True: #This is where all the events of the game play out
         print("'Yes! A way out!'")
         print("I then left the room without looking back. Outside was a corridor. And in front were 3 doors ")
         OptionsConfirm()
+        Event = "Door Choice"
+
+    elif Event == "Door Choice":
         print("'Hmmm, which door to take?'")
         time.sleep(2)
         usr_input = input("Left/Middle/Right? :")
@@ -145,7 +148,6 @@ while True: #This is where all the events of the game play out
     elif Event == "Right Door":
         print("I took the door on the right")
         break
-
     elif Event == "Middle Door":
         print("'You can't wrong with the middle door' I thought to myself.")
         OptionsConfirm()
@@ -170,15 +172,11 @@ while True: #This is where all the events of the game play out
             print("""Dismissing the pain burning in my side I swiped the torch at it again, aiming for the head this time
             around. The head was reduced to nothing but ash, causing the rest of the body to collapse into a heap of bones.""")
             OptionsConfirm()
-            print("'Looks like this torch has ran out.'")
             PlayerInventory()
             break
         elif usr_input in Run:
-            print("'I don't think fighting that thing is such a good idea.' And with that I run away")
-            break
-
-
-
-
-
-
+            print("'I don't think fighting that thing is such a good idea!' And with that I ran away.")
+            OptionsConfirm()
+            print("""I ended up back in the hall way and tried to catch my breath. It didn't seem like
+             the skeleton was pursuing me anymore. """)
+            Event = "Door Choice"
