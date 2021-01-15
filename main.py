@@ -65,8 +65,13 @@ def PlayerStatsBehaviour():
 
 def RestoreHP():
     global health
-    health += 5
-    print("Health:", health)
+
+    if health > 20:
+        health = 20 #this allows the player to restore their HP back to just 20 and not above it
+        print("Health:", health)
+    else:
+        health +=5
+        print("Health:", health)
 
 def UseItems():
 
