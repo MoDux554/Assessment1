@@ -14,6 +14,7 @@ Confirm = ["a", "A"]
 LMR = ["Left", "Middle", "Right"]
 Fight = ["Fight", "fight", "f", "F"]
 Run = [ "Run", "run", "r", "R"]
+Close = ["B", "b"]
 OpenInventory = ["I", "i,"]
 
 valueChange = 0
@@ -50,43 +51,73 @@ def OptionsConfirm(): #this function is called upon everytime the player is aske
             continue
 
 
-def PlayerStatsBehaviour():
 
+def ReduceHunger():
+    global hunger
+    hunger -= 3
+    print("Hunger:", hunger)
+
+
+def PlayerGetsHungry():
     global hunger
     global health
 
+    hunger += 5
+    print("Your stomach growls...")
+    print("Hunger:", hunger)
+
     if hunger == 10:
-        health -= 1
+        health -= 3
+        print("Hunger:", hunger)
+        print("Health:", health)
+    elif hunger > 10:
+        hunger = 10
+        health -= 3
+        print("Hunger:", hunger)
+        print("Health:", health)
+
+
+def PlayerHealthChanges(): #changes to the player's stats during and outside of battle
+    global health
 
     if Event == "Middle Door":
          health -= 3
          print("3 damage was dealt!")
          print("(Health remaining):", health)
 
+
 def RestoreHP():
     global health
 
+    health += 5
     if health > 20:
         health = 20 #this allows the player to restore their HP back to just 20 and not above it
         print("Health:", health)
-    else:
-        health +=5
-        print("Health:", health)
+    print("Health:", health)
 
 def UseItems():
-
    print(inventory)
    while True:
        select_item = input("Input an item or press the B button to close the inventory")
        if select_item in inventory:
            if select_item == "Med Kit":
                print("This will restore 5HP. Do you want to use it?")
-               Restore = input(":")
+               Restore = input("Yes/No:")
                if Restore in Yes:
                    RestoreHP()
-                   break
+               elif Restore in No:
+                   continue
+           elif select_item == "Plate of Steak":
+               print("This will reduce your hunger by 3. Do you want to use it?")
+               Restore = input("Yes/No:")
+               if Restore in Yes:
+                   ReduceHunger()
+               continue
 
-
+       elif select_item in Close:
+           break
+       else:
+           continue
 
 def AddToInventory(): #Adds things the player picks up during the game into the inventory, these correspond
                        #to the "events" the player is in.
@@ -124,6 +155,10 @@ def AddToInventory(): #Adds things the player picks up during the game into the 
         inventory["Med Kit"] = 5
         print("The Med Kit was added to your inventory.")
         print(inventory)
+
+    elif Event == "GettingHungry":
+        inventory["Plate of Steak"] = 5
+        print("The Plate of Steak was added to your inventory.")
 
 
 
@@ -198,7 +233,7 @@ while True: #This is where all the events of the game play out
                   "the flames made contact with the skeleton for a brief moment.")
             OptionsConfirm()
             print("In retaliation, the skeleton swipped its hand at me, their claws slashed against my side once")
-            PlayerStatsBehaviour()
+            PlayerHealthChanges()
             OptionsConfirm()
             print("""Dismissing the pain burning in my side I swiped the torch at it again, aiming for the head this time
             around. The head was reduced to nothing but ash, causing the rest of the body to collapse into a heap of bones.""")
@@ -212,18 +247,44 @@ while True: #This is where all the events of the game play out
             print("""I ended up back in the hall way and tried to catch my breath. It didn't seem like
              the skeleton was pursuing me anymore. """)
             Event = "Door Choice"
+
     elif Event == "AfterSkeletonFight":
         print("I walked on some more until I came across another object on the ground")
         OptionsConfirm()
         print("'Looks like a first aid, this will be helpful, my side is still hurting after that encourer with the skeleton.'")
+        OptionsConfirm()
         AddToInventory()
         print("""If you want to open up the inventory, press the I button on your keyboard. This way you will be able to use items to restore your HP.
         Why don't you try it now?""")
         usr_input = input(":")
         if usr_input in OpenInventory:
             UseItems()
-            Event = "Next"
+            Event = "GettingHungry"
 
-    elif Event == "Next":
-        print("this is the next event")
+    elif Event == "GettingHungry":
+        PlayerGetsHungry()
+        OptionsConfirm()
+        print("'Oh man, I guess I must have been here for a while, I don't think I've eaten in a couple of hours...'")
+        OptionsConfirm()
+        print("'Hopefully I can get out of here soon...'")
+        OptionsConfirm()
+        PlayerHealthChanges()
+        OptionsConfirm()
+        print("I continued my walk along the corridor despite my persistent hunger pangs.")
+        OptionsConfirm()
+        print("Eventually I cam across another room, and the lights were on.")
+        OptionsConfirm()
+        print("'Is this... A kitchen?'")
+        OptionsConfirm()
+        print("""Sure enough it was a kitchen, housing the usual appliances you would find. A micorwave, fridge, stove and oven.
+        Nothing looked out of the ordinary.""")
+        OptionsConfirm()
+        print("""I eventually found a plate on the counter which has some steak on it.""")
+        OptionsConfirm()
+        print("""'Finders keepers...' I took the steak without a care in the world. I was too hungry to be concerned about whether
+        or not the food was poisoned or edible in the first place.'""")
+        OptionsConfirm()
+        AddToInventory()
+        OptionsConfirm()
+        ReduceHunger()
         break
