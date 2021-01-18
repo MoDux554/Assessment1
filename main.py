@@ -138,7 +138,7 @@ def RestoreHP():
         print(inventory)
 
 
-def UseItems(inventory):
+def UseItems():
    print(inventory)
    while True:
        select_item = input("Input an item or press the B button to close the inventory")
