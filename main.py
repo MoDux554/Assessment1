@@ -43,6 +43,7 @@ def FightOptions():
                 break
             else:
                 continue
+
         elif Event == "BattleWithThree":
             Choice = input("What do you want to do? (Fight/Items)")
             if Choice in Fight:
@@ -85,7 +86,6 @@ def OptionsConfirm(): #this function is called upon everytime the player is aske
             break
         else:
             continue
-
 
 
 def ReduceHunger():
@@ -138,29 +138,37 @@ def RestoreHP():
         print(inventory)
 
 
-def UseItems():
+def UseItems(inventory):
    print(inventory)
    while True:
        select_item = input("Input an item or press the B button to close the inventory")
        if select_item in inventory:
            if select_item == "Med Kit":
-               print("This will restore 5HP. Do you want to use it?")
-               Restore = input("Yes/No:")
-               if Restore in Yes:
-                   RestoreHP()
-               elif Restore in No:
-                   continue
+               MedKit()
            elif select_item == "Plate of Steak":
-               print("This will reduce your hunger by 3. Do you want to use it?")
-               Restore = input("Yes/No:")
-               if Restore in Yes:
-                   ReduceHunger()
-               continue
-
+               Steak()
        elif select_item in Close:
            break
        else:
            continue
+
+def MedKit():
+    while True:
+        print("This will restore 5 HP, do you want to use it? ")
+        Restore = input("Yes/No:")
+        if Restore in Yes:
+            RestoreHP()
+        elif Restore in No:
+            break
+def Steak():
+    while True:
+        print("This will reduce your hunger by 3. Do you want to eat it?")
+        Restore = input("Yes/No:")
+        if Restore in Yes:
+            ReduceHunger()
+        elif Restore in No:
+            break
+
 
 def AddToInventory(): #Adds things the player picks up during the game into the inventory, these correspond
                        #to the "events" the player is in.
@@ -203,6 +211,11 @@ def AddToInventory(): #Adds things the player picks up during the game into the 
         inventory["Plate of Steak"] = 5
         print("The Plate of Steak was added to your inventory.")
         print("Plate of Steak")
+
+    elif Event == "BattleWithThree":
+        inventory["Key"] = 1
+        print("The Key was added to your inventory")
+        OptionsConfirm
 
 
 
@@ -356,13 +369,27 @@ while True: #This is where all the events of the game play out
                     OptionsConfirm()
                     Round += 1 #After this the battle loops back to the FightOptions function
                 elif weaponChoice == 2:
-                    print("I used the Lance to stab one of the heads in the eyes")
+                    print("I used the Lance to stab one of the heads in the eyes...")
                     OptionsConfirm()
-                    print("One of the dogs lost its composure and started thrashing around, until suddenly it stopped moving. ")
+                    print("One of the dogs lost its composure and started thrashing around, until suddenly it stopped moving... ")
                     OptionsConfirm()
                     PlayerHealthChanges() #Damage is done by the enemy
                     OptionsConfirm()
                     Round += 1 #After this the battle loops back to the FightOptions function
                 if Round == 3:
-                    print("The three headed dog has fallen...")
-                    break
+                    print("The three headed dog has fallen!")
+                    OptionsConfirm()
+                    print("'Thank goodness...'")
+                    OptionsConfirm()
+                    AddToInventory()
+                    Event = "ReachingTheEnd"
+    elif Event == "ReachingTheEnd":
+        print("With the three headed dog no longer a threat I proceeded onwards.")
+        OptionsConfirm()
+        print("'Hopefully I won't run into anymore bizzare creatures'")
+        OptionsConfirm()
+        print("Eventually I reached a huge red door, which had a lock in it")
+        OptionsConfirm()
+        print("'Perhaps this key I got recently will help?")
+        OptionsConfirm()
+        UseItems()
