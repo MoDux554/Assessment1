@@ -8,6 +8,8 @@ health = 20 #if it reaches 0 the it is game over
 hunger = 0 #if it reaches 10 the health begins to reduce gradually
 
 
+Choice = ""
+weaponChoice = ""
 Restore = ""
 Yes = ["y", "Y", "yes", "Yes"]
 No = ["n", "N", "no", "No"]
@@ -17,12 +19,13 @@ Fight = ["Fight", "fight", "f", "F"]
 Run = [ "Run", "run", "r", "R"]
 Close = ["B", "b"]
 OpenInventory = ["Item", "I", "i"]
+SkeletonLance = ["Skeleton Lance", "skeleton lance", "sk", "SK","s", "S"]
+Torch = ["Torch", "torch", "t", "T"]
 
-weaponChoice = ""
+
+
 Round = 0
-
 valueChange = 0
-
 Event = 0
 
 print(".")
@@ -34,6 +37,10 @@ print("...")
 
 
 def FightOptions():
+   global Choice
+   global weaponChoice
+   global usr_input
+   global inventory
    while True:
         if Event == "Middle Door":
             usr_input = input("Fight/Run:")
@@ -47,14 +54,16 @@ def FightOptions():
         elif Event == "BattleWithThree":
             Choice = input("What do you want to do? (Fight/Items)")
             if Choice in Fight:
-                weaponChoice = int(input("Which weapon do you wish to use? input 1 or 2 to use either the Torch or the Skeleton Lance"))
                 print(Weapons)
-                if weaponChoice == 1:
+                weaponChoice = (input("Which weapon do you wish to use? input 1 or 2 to use either the Torch or the Skeleton Lance"))
+                if weaponChoice in Torch:
                     UsedTorch()
                     break
-                elif weaponChoice == 2:
+                elif weaponChoice in SkeletonLance:
                     UsedSkeletonLance()
                     break
+                else:
+                    continue
             elif Choice in OpenInventory:
                 UseItems()
                 break
@@ -63,20 +72,15 @@ def FightOptions():
 
 
 def UsedTorch():
+
     if Weapons["Torch"] > 0:
      Weapons["Torch"] -= 1
      print(Weapons)
-
-    else:
-        print("You no longer have this weapon!")
 
 def UsedSkeletonLance():
     if Weapons["Skeleton Lance"] > 0:
         Weapons["Skeleton Lance"] -= 1
         print(Weapons)
-
-    else:
-        print("You no longer have this weapon!")
 
 def OptionsConfirm(): #this function is called upon everytime the player is asked to input the A button to continue dialouge
     global usr_input
@@ -119,18 +123,21 @@ def PlayerHealthChanges(): #changes to the player's stats during and outside of 
     if Event == "Middle Door":
          health -= 3
          print("3 damage was dealt!")
+         OptionsConfirm()
          print("(Health remaining):", health)
 
     if Event == "BattleWithThree":
-        health -= 10
-        print("10 damage was dealt!")
+        health -= 5
+        print("8 damage was dealt!")
+        OptionsConfirm()
         print("(Health remaining):", health)
 
 
 def RestoreHP():
     global health
 
-    health += 5
+    health +=5
+
     if health > 20:
         health = 20 #this allows the player to restore their HP back to just 20 and not above it
         print("Health:", health)
@@ -145,8 +152,10 @@ def UseItems():
        if select_item in inventory:
            if select_item == "Med Kit":
                MedKit()
+               break
            elif select_item == "Plate of Steak":
                Steak()
+               break
        elif select_item in Close:
            break
        else:
@@ -154,20 +163,29 @@ def UseItems():
 
 def MedKit():
     while True:
-        print("This will restore 5 HP, do you want to use it? ")
-        Restore = input("Yes/No:")
-        if Restore in Yes:
-            RestoreHP()
-        elif Restore in No:
-            break
+        if inventory["Med Kit"] >= 0:
+            print("This will restore 5 HP, do you want to use it? ")
+            Restore = input("Yes/No:")
+            if Restore in Yes:
+                RestoreHP()
+                OptionsConfirm()
+            elif Restore in No:
+                break
+        else:
+            print("You no longer have this item!")
 def Steak():
     while True:
-        print("This will reduce your hunger by 3. Do you want to eat it?")
-        Restore = input("Yes/No:")
-        if Restore in Yes:
-            ReduceHunger()
-        elif Restore in No:
-            break
+        if inventory["Plate of Steak"] > 0:
+            print("This will reduce your hunger by 3. Do you want to eat it?")
+            Restore = input("Yes/No:")
+            if Restore in Yes:
+                ReduceHunger()
+            elif Restore in No:
+                break
+            else:
+                continue
+        else:
+            print("You no longer have this item!")
 
 
 def AddToInventory(): #Adds things the player picks up during the game into the inventory, these correspond
@@ -188,6 +206,8 @@ def AddToInventory(): #Adds things the player picks up during the game into the 
                     inventory["Sticks"] -= valueChange
                     Weapons["Torch"] += valueChange
                     print(inventory)
+                    OptionsConfirm()
+                    print(Weapons)
                     break
                 else:
                     print("Please enter in a number between 1 and 5") #occurs when the player enters a number less than one or more than #5
@@ -210,16 +230,20 @@ def AddToInventory(): #Adds things the player picks up during the game into the 
     elif Event == "GettingHungry":
         inventory["Plate of Steak"] = 5
         print("The Plate of Steak was added to your inventory.")
-        print("Plate of Steak")
+        print(inventory)
 
     elif Event == "BattleWithThree":
         inventory["Key"] = 1
         print("The Key was added to your inventory")
-        OptionsConfirm
+        OptionsConfirm()
 
 
 
 while True: #This is where all the events of the game play out
+    if health == 0:
+        Event = "Death"
+
+
     if Event == 0:
         OptionsConfirm()
         print(" 'Nghh...' ")
@@ -227,9 +251,9 @@ while True: #This is where all the events of the game play out
         print(" 'My head... where I am..?' ")
         time.sleep(2)
         print("""I took in my surroundings as my consciousness slowly reformed.
-        It seems that I am in a dark room, there were no window so I couldn't tell
-        what the time was. The room itself was mostly dark. Looking down  I saw
-        a bunch of sticks lying around, which I picked up""")
+It seems that I am in a dark room, there were no window so I couldn't tell
+what the time was. The room itself was mostly dark. Looking down  I saw
+a bunch of sticks lying around, which I picked up""")
 
         OptionsConfirm()
         AddToInventory()
@@ -278,7 +302,8 @@ while True: #This is where all the events of the game play out
         OptionsConfirm()
         print("'Wh-What...?'")
         OptionsConfirm()
-        print("I didn't have much time to think more about what I was seeing as the bones and skull began to move, they rearranged themselves until it resembled an actual body.")
+        print("""I didn't have much time to think more about what I was seeing as the bones and skull began to move, 
+they rearranged themselves until it resembled an actual body.""")
         OptionsConfirm()
         print("Once that was complete, the skeleton took notice of my presence and started to run at me!")
         OptionsConfirm()
@@ -293,7 +318,7 @@ while True: #This is where all the events of the game play out
             PlayerHealthChanges()
             OptionsConfirm()
             print("""Dismissing the pain burning in my side I swiped the torch at it again, aiming for the head this time
-            around. The head was reduced to nothing but ash, causing the rest of the body to collapse into a heap of bones.""")
+around. The head was reduced to nothing but ash, causing the rest of the body to collapse into a heap of bones.""")
             OptionsConfirm()
             AddToInventory()
             Event = "AfterSkeletonFight"
@@ -302,17 +327,17 @@ while True: #This is where all the events of the game play out
             print("'I don't think fighting that thing is such a good idea!' And with that I ran away.")
             OptionsConfirm()
             print("""I ended up back in the hall way and tried to catch my breath. It didn't seem like
-             the skeleton was pursuing me anymore. """)
+the skeleton was pursuing me anymore. """)
             Event = "Door Choice"
 
     elif Event == "AfterSkeletonFight":
         print("I walked on some more until I came across another object on the ground")
         OptionsConfirm()
-        print("'Looks like a first aid, this will be helpful, my side is still hurting after that encourer with the skeleton.'")
+        print("'Looks like a first aid kit, this will be helpful, my side is still hurting after that encounter with the skeleton.'")
         OptionsConfirm()
         AddToInventory()
         print("""If you want to open up the inventory, press the I button on your keyboard. This way you will be able to use items to restore your HP.
-        Why don't you try it now?""")
+Why don't you try it now?""")
         usr_input = input(":")
         if usr_input in OpenInventory:
             UseItems()
@@ -334,12 +359,12 @@ while True: #This is where all the events of the game play out
         print("'Is this... A kitchen?'")
         OptionsConfirm()
         print("""Sure enough it was a kitchen, housing the usual appliances you would find. A micorwave, fridge, stove and oven.
-        Nothing looked out of the ordinary.""")
+Nothing looked out of the ordinary.""")
         OptionsConfirm()
         print("""I eventually found a plate on the counter which has some steak on it.""")
         OptionsConfirm()
         print("""'Finders keepers...' I took the steak without a care in the world. I was too hungry to be concerned about whether
-        or not the food was poisoned or edible in the first place.'""")
+or not the food was poisoned or edible in the first place.'""")
         OptionsConfirm()
         AddToInventory()
         OptionsConfirm()
@@ -362,27 +387,47 @@ while True: #This is where all the events of the game play out
         if Event == "BattleWithThree":
             while Round < 3: #when Round reaches 3, the battle will end
                 FightOptions()
-                if weaponChoice == 1:
+                if Choice in Fight and weaponChoice in Torch and Weapons["Torch"] > 0:
                     print("I used the torch in an attempt to burn  off one of the heads.")
+                    Round += 1
+                    weaponChoice = "" #resets the weapon choice
+                    Choice = "" #resets the general choice
                     OptionsConfirm()
                     PlayerHealthChanges() #Damage is done by the enemy
                     OptionsConfirm()
-                    Round += 1 #After this the battle loops back to the FightOptions function
-                elif weaponChoice == 2:
+                elif Choice in Fight and weaponChoice in SkeletonLance and Weapons["Skeleton Lance"] > 0:
                     print("I used the Lance to stab one of the heads in the eyes...")
+                    Round += 1
                     OptionsConfirm()
+                    weaponChoice = "" #resets the weapon choice
+                    Choice = "" #resets the general choice
                     print("One of the dogs lost its composure and started thrashing around, until suddenly it stopped moving... ")
                     OptionsConfirm()
                     PlayerHealthChanges() #Damage is done by the enemy
                     OptionsConfirm()
-                    Round += 1 #After this the battle loops back to the FightOptions function
-                if Round == 3:
+                elif Choice in Fight and weaponChoice in SkeletonLance and Weapons["Skeleton Lance"]<= 0:
+                    print("You no longer have this weapon!")
+                    Choice = ""
+                    weaponChoice = ""
+                    OptionsConfirm()
+                    continue
+
+                if Choice in OpenInventory:
+                    PlayerHealthChanges()
+                    OptionsConfirm()
+
+                if Round == 3 and health != 0 and health >0:
                     print("The three headed dog has fallen!")
                     OptionsConfirm()
                     print("'Thank goodness...'")
                     OptionsConfirm()
                     AddToInventory()
                     Event = "ReachingTheEnd"
+
+                elif health <= 0:
+                    Event = "Death"
+
+
     elif Event == "ReachingTheEnd":
         print("With the three headed dog no longer a threat I proceeded onwards.")
         OptionsConfirm()
@@ -390,6 +435,14 @@ while True: #This is where all the events of the game play out
         OptionsConfirm()
         print("Eventually I reached a huge red door, which had a lock in it")
         OptionsConfirm()
-        print("'Perhaps this key I got recently will help?")
+        print("This key should be helpful")
         OptionsConfirm()
-        UseItems()
+        inventory["Key"] -= 1
+        print("You used the key to unlock the door")
+        break
+
+
+    elif Event == "Death":
+        print("You have died. Game over...")
+        OptionsConfirm()
+        break
