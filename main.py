@@ -29,9 +29,9 @@ valueChange = 0
 Event = 0
 
 print(".")
-time.sleep(2)
+time.sleep(1)
 print("..")
-time.sleep(2)
+time.sleep(1)
 print("...")
 
 
@@ -41,8 +41,9 @@ def FightOptions():
    global weaponChoice
    global usr_input
    global inventory
+
    while True:
-        if Event == "Middle Door":
+        if Event == "FightWithSkeleton":
             usr_input = input("Fight/Run:")
             if usr_input in Fight:
                 break
@@ -57,10 +58,8 @@ def FightOptions():
                 print(Weapons)
                 weaponChoice = (input("Which weapon do you wish to use? input 1 or 2 to use either the Torch or the Skeleton Lance"))
                 if weaponChoice in Torch:
-                    UsedTorch()
                     break
                 elif weaponChoice in SkeletonLance:
-                    UsedSkeletonLance()
                     break
                 else:
                     continue
@@ -96,6 +95,7 @@ def ReduceHunger():
     global hunger
     hunger -= 3
     print("Hunger:", hunger)
+    OptionsConfirm()
 
 
 def PlayerGetsHungry():
@@ -104,45 +104,64 @@ def PlayerGetsHungry():
 
     hunger += 5
     print("Your stomach growls...")
-    print("Hunger:", hunger)
+
 
     if hunger == 10:
-        health -= 3
+        health -= 2
         print("Hunger:", hunger)
-        print("Health:", health)
+        OptionsConfirm()
+        print("Health remaining:", health)
     elif hunger > 10:
         hunger = 10
-        health -= 3
+        health -= 2
         print("Hunger:", hunger)
-        print("Health:", health)
+        OptionsConfirm()
+        print("Health remaining:", health)
+    else:
+        print("Hunger:", hunger )
 
 
 def PlayerHealthChanges(): #changes to the player's stats during and outside of battle
     global health
 
-    if Event == "Middle Door":
+    if Event == "FightWithSkeleton":
          health -= 3
          print("3 damage was dealt!")
          OptionsConfirm()
          print("(Health remaining):", health)
+         OptionsConfirm()
 
-    if Event == "BattleWithThree":
+    elif Event == "BattleWithThree":
         health -= 5
-        print("8 damage was dealt!")
+        print("5 damage was dealt!")
         OptionsConfirm()
         print("(Health remaining):", health)
+
+    elif Event == "RunningFromSkeleton":
+        health -= 5
+        print("5 damage was dealth")
+        OptionsConfirm()
+        print("Health remaining", health)
+        OptionsConfirm()
 
 
 def RestoreHP():
     global health
-
     health +=5
 
     if health > 20:
         health = 20 #this allows the player to restore their HP back to just 20 and not above it
         print("Health:", health)
         inventory["Med Kit"] -=1
+        OptionsConfirm()
         print(inventory)
+        OptionsConfirm()
+    else:
+        print("Health:", health)
+        inventory["Med Kit"] -= 1
+        OptionsConfirm()
+        print(inventory)
+        OptionsConfirm()
 
 
 def UseItems():
@@ -168,11 +187,11 @@ def MedKit():
             Restore = input("Yes/No:")
             if Restore in Yes:
                 RestoreHP()
-                OptionsConfirm()
             elif Restore in No:
                 break
         else:
             print("You no longer have this item!")
+            OptionsConfirm()
 def Steak():
     while True:
         if inventory["Plate of Steak"] > 0:
@@ -186,6 +205,7 @@ def Steak():
                 continue
         else:
             print("You no longer have this item!")
+            OptionsConfirm()
 
 
 def AddToInventory(): #Adds things the player picks up during the game into the inventory, these correspond
@@ -193,9 +213,10 @@ def AddToInventory(): #Adds things the player picks up during the game into the 
     if Event == 0:
         inventory["Sticks"] = 5
         print("The bunch of sticks were added to the inventory")
+        OptionsConfirm()
         print(inventory)
 
-    elif Event == 1:
+    elif Event == "MakingSomeLight":
         # The torch is added here so that more can be added to it from the user input
         Weapons["Torch"] = 0
         global valueChange #this variable is referenced outside of the PlayerInventory function
@@ -207,34 +228,45 @@ def AddToInventory(): #Adds things the player picks up during the game into the 
                     Weapons["Torch"] += valueChange
                     print(inventory)
                     OptionsConfirm()
+                    print("The torches were added to your weapons.")
+                    OptionsConfirm()
                     print(Weapons)
                     break
                 else:
-                    print("Please enter in a number between 1 and 5") #occurs when the player enters a number less than one or more than #5
+                    print("Please enter in a number between 1 and 5.")#occurs when the player enters a number less than one or more than #5
+                    OptionsConfirm()
                     continue
             except ValueError:
-                print("please enter in a number")
+                print("please enter in a number.")
+                OptionsConfirm()
 
-    elif Event == "Middle Door":
-        print("the Skeleton Lance was added to your inventory.")
+    elif Event == "FightWithSkeleton":
+        print("the Skeleton Lance was added to your weapons.")
+        OptionsConfirm()
         Weapons["Skeleton Lance"] = 10
         print("Your torch has run out!")
         UsedTorch()
-        print(inventory)
+        OptionsConfirm()
 
     elif Event == "AfterSkeletonFight":
         inventory["Med Kit"] = 5
         print("The Med Kit was added to your inventory.")
+        OptionsConfirm()
         print(inventory)
+        OptionsConfirm()
 
     elif Event == "GettingHungry":
         inventory["Plate of Steak"] = 5
         print("The Plate of Steak was added to your inventory.")
+        OptionsConfirm()
         print(inventory)
+        OptionsConfirm()
 
     elif Event == "BattleWithThree":
         inventory["Key"] = 1
         print("The Key was added to your inventory")
+        OptionsConfirm()
+        print(inventory)
         OptionsConfirm()
 
 
@@ -247,9 +279,9 @@ while True: #This is where all the events of the game play out
     if Event == 0:
         OptionsConfirm()
         print(" 'Nghh...' ")
-        time.sleep(2)
+        time.sleep(1)
         print(" 'My head... where I am..?' ")
-        time.sleep(2)
+        time.sleep(1)
         print("""I took in my surroundings as my consciousness slowly reformed.
 It seems that I am in a dark room, there were no window so I couldn't tell
 what the time was. The room itself was mostly dark. Looking down  I saw
@@ -257,46 +289,23 @@ a bunch of sticks lying around, which I picked up""")
 
         OptionsConfirm()
         AddToInventory()
-        Event = 1
+        Event = "MakingSomeLight"
 
-    elif Event == 1:
+    elif Event == "MakingSomeLight":
+        PlayerGetsHungry()
         print("'Oh I think I see some fire there, maybe I can make a couple of torches?'")
         OptionsConfirm()
         AddToInventory()
-        Event = 2
-
-    elif Event == 2:
         print("I used one of the torches to look around my surrondings again, until I found the exit of this room")
         OptionsConfirm()
         print("'Yes! A way out!'")
-        print("I then left the room without looking back. Outside was a corridor. And in front were 3 doors ")
+        print("I then left the room without looking back. Outside was a corridor, where I saw another door opened.")
         OptionsConfirm()
-        Event = "Door Choice"
+        Event = "EnteringTheDoor"
 
-    elif Event == "Door Choice":
-        print("'Hmmm, which door to take?'")
-        time.sleep(2)
-        usr_input = input("Left/Middle/Right? :")
-        if usr_input in LMR:
-            if usr_input == "Left":
-                Event = "Left Door"
-            elif usr_input == "Right":
-                Event = "Right Door"
-            elif usr_input == "Middle":
-                Event = "Middle Door"
-        else:
-            continue
-
-
-
-    elif Event == "Left Door":
-        print("I went through the left door")
-        break
-    elif Event == "Right Door":
-        print("I took the door on the right")
-        break
-    elif Event == "Middle Door":
-        print("'You can't wrong with the middle door' I thought to myself.")
+    elif Event == "EnteringTheDoor":
+        PlayerGetsHungry()
+        print("'I am not going to get much done standing out here'")
         OptionsConfirm()
         print("I walked through and nothing at first seemed conspicuous. That was until... I came across a pile of bones and a skull.")
         OptionsConfirm()
@@ -307,6 +316,9 @@ they rearranged themselves until it resembled an actual body.""")
         OptionsConfirm()
         print("Once that was complete, the skeleton took notice of my presence and started to run at me!")
         OptionsConfirm()
+        Event = "FightWithSkeleton"
+
+    elif Event == "FightWithSkeleton":
         print("'What should I do?!'")
         time.sleep(1.5)
         FightOptions()
@@ -316,7 +328,6 @@ they rearranged themselves until it resembled an actual body.""")
             OptionsConfirm()
             print("In retaliation, the skeleton swipped its hand at me, their claws slashed against my side once")
             PlayerHealthChanges()
-            OptionsConfirm()
             print("""Dismissing the pain burning in my side I swiped the torch at it again, aiming for the head this time
 around. The head was reduced to nothing but ash, causing the rest of the body to collapse into a heap of bones.""")
             OptionsConfirm()
@@ -324,13 +335,20 @@ around. The head was reduced to nothing but ash, causing the rest of the body to
             Event = "AfterSkeletonFight"
 
         elif usr_input in Run:
-            print("'I don't think fighting that thing is such a good idea!' And with that I ran away.")
-            OptionsConfirm()
-            print("""I ended up back in the hall way and tried to catch my breath. It didn't seem like
-the skeleton was pursuing me anymore. """)
-            Event = "Door Choice"
+            Event = "RunningFromSkeleton"
+            if Event == "RunningFromSkeleton":
+                print("'I don't think fighting that thing is such a good idea!' I turned back and begin to run from the skeleton.")
+                OptionsConfirm()
+                print("It gave chase and eventually it caught up to me. It closed the distanced and swipped at my back.")
+                OptionsConfirm()
+                PlayerHealthChanges()
+                if health <=0:
+                    Event = "Death"
+                else:
+                    Event = "FightWithSkeleton"
 
     elif Event == "AfterSkeletonFight":
+        PlayerGetsHungry()
         print("I walked on some more until I came across another object on the ground")
         OptionsConfirm()
         print("'Looks like a first aid kit, this will be helpful, my side is still hurting after that encounter with the skeleton.'")
@@ -389,6 +407,7 @@ or not the food was poisoned or edible in the first place.'""")
                 FightOptions()
                 if Choice in Fight and weaponChoice in Torch and Weapons["Torch"] > 0:
                     print("I used the torch in an attempt to burn  off one of the heads.")
+                    UsedTorch()
                     Round += 1
                     weaponChoice = "" #resets the weapon choice
                     Choice = "" #resets the general choice
@@ -397,6 +416,7 @@ or not the food was poisoned or edible in the first place.'""")
                     OptionsConfirm()
                 elif Choice in Fight and weaponChoice in SkeletonLance and Weapons["Skeleton Lance"] > 0:
                     print("I used the Lance to stab one of the heads in the eyes...")
+                    UsedSkeletonLance()
                     Round += 1
                     OptionsConfirm()
                     weaponChoice = "" #resets the weapon choice
